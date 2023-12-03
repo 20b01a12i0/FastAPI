@@ -37,45 +37,6 @@ def create_table():
 
 create_table()
 
-from fastapi import FastAPI, HTTPException, Query
-from typing import List
-from pydantic import BaseModel
-from uuid import uuid4
-import sqlite3
-
-app = FastAPI()
-
-DATABASE_FILE = "carsdata.db"
-
-class CarBase(BaseModel):
-    brand: str
-    model: str
-    color: str
-    year_of_manufacture: str
-    fuel_type: str
-    is_rented: bool
-    is_available_to_buy: bool
-
-def create_table():
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cars (
-            id TEXT PRIMARY KEY,
-            brand TEXT,
-            model TEXT,
-            color TEXT,
-            year_of_manufacture TEXT,
-            fuel_type TEXT,
-            is_rented BOOLEAN,
-            is_available_to_buy BOOLEAN
-        )
-    ''') 
-    conn.commit()
-    conn.close()
-
-create_table()
-
 @app.post("/api/cars", response_model=dict)
 def add_car(car: CarBase):
     car_id = str(uuid4())
